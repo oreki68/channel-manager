@@ -2,15 +2,15 @@ import time
 from config import client as client
 from telethon import events
 
-@client.on(events.NewMessage(pattern=("\+help")))
+@client.on(events.NewMessage(outgoing=True, pattern=("\+help")))
 async def help_function(event):
-    await event.edit("Commands avilabe:-\n\n`+ping` - Just a confirmation that bot is working\n\n`+fwd :<username of channel>:<start_id>:<end_id>` - Forward a bunch of files without forwarded from tag\n\n`+edit :<username of group where corrected file is located>:<correct file message_id>` if you messed up sequence in channel (reply this command to the file you want to edit)\n\n\n*Note if channel/group you are working with is private in place of username put invite link starting from `joinchat/.....`")
+    await event.edit("Commands avilabe:-\n\n`+ping` - Just a confirmation that bot is working\n\n`+fwd :<username of channel>:<start_id>:<end_id>` - Forward a bunch of files without forwarded from tag\n\n`+edit :<username of group where corrected file is located>:<correct file message_id>` if you messed up sequence in channel (reply this command to the file you want to edit)\n\n`+purge` :start_id:end_id - Nothing complex here just deletes a bunch of messages\n\n\n*Note if channel/group you are working with is private in place of username put invite link starting from `joinchat/.....`")
 
-@client.on(events.NewMessage(pattern=("\+ping")))
+@client.on(events.NewMessage(outgoing=True, pattern=("\+ping")))
 async def hi_function(event):
     await event.edit("pong")
 
-@client.on(events.NewMessage(pattern=("\+fwd")))
+@client.on(events.NewMessage(outgoing=True, pattern=("\+fwd")))
 async def fwd_function(event):
     try:
         await event.edit("okay, on it")
@@ -32,7 +32,7 @@ async def fwd_function(event):
 
     await client.send_message(event.chat_id, "done")
 
-@client.on(events.NewMessage(pattern=("\+edit")))
+@client.on(events.NewMessage(outgoing=True, pattern=("\+edit")))
 async def edit_function(event):
     split = event.raw_text.split(":")
     username = split[1]
@@ -44,7 +44,7 @@ async def edit_function(event):
     await client.edit_message(reply, file=message.media, force_document=True)
     await event.edit("Done")
 
-@client.on(events.NewMessage(pattern=("\+purge")))
+@client.on(events.NewMessage(outgoing=True, pattern=("\+purge")))
 async def purge(event):
     split = event.raw_text.split(":")
     start = int(split[1])
