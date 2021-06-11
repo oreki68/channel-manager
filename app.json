@@ -5,7 +5,7 @@
     "repository": "https://github.com/MiyukiKun/custom-userbot",
     "keywords": ["telegrambot", "userbot", "telegram", "channels"],
     "env": {
-        "APP_ID": {
+        "API_ID": {
           "description": "Get this value from https://my.telegram.org",
           "value": ""
         },
