@@ -20,7 +20,6 @@ async def fwd_function(event):
         end_id = int(split[3])+1
         channel = await client.get_entity(f"t.me/{username_of_channel}")
         for i in range(start_id, end_id):
-            print("hi")
             try:
                 message = await client.get_messages(channel, ids=i)
                 await client.send_message(event.chat_id, message)
