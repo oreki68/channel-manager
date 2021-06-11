@@ -17,7 +17,7 @@ Telegram userbot mainly useful for channel owners without the 100s of useless sp
 
 To run this project, you will need to add the following environment variables to your .env file
 
-- `API_ID` and `API_HASH` from [here](my.telegram.org)
+- `API_ID` and `API_HASH` from [here](https://my.telegram.org/)
 - `STRING_SESSION` from [here](https://replit.com/@TeamUltroid/UltroidStringSession#main.py)
 
 # Deployment 
