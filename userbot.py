@@ -20,7 +20,6 @@ async def fwd_function(event):
         end_id = int(split[3])+1
         channel = await client.get_entity(f"t.me/{username_of_channel}")
         for i in range(start_id, end_id):
-            print("hi")
             try:
                 message = await client.get_messages(channel, ids=i)
                 await client.send_message(event.chat_id, message)
@@ -30,7 +29,10 @@ async def fwd_function(event):
     except:
         pass
 
-    await client.send_message(event.chat_id, "done")
+    x = await client.send_message(event.chat_id, "done")
+    time.sleep(1)
+    await x.delete()
+    await event.delete()
 
 @client.on(events.NewMessage(outgoing=True, pattern=("\+edit")))
 async def edit_function(event):
@@ -42,7 +44,7 @@ async def edit_function(event):
     message = await client.get_messages(entity, ids=msg_id)
     await event.edit("Editing the message holup....")
     await client.edit_message(reply, file=message.media, force_document=True)
-    await event.edit("Done")
+    await event.delete()
 
 @client.on(events.NewMessage(outgoing=True, pattern=("\+purge")))
 async def purge(event):
@@ -56,6 +58,7 @@ async def purge(event):
         except:
             pass
         time.sleep(0.25)
+    await event.delete()
 
 @client.on(events.NewMessage(outgoing=True, pattern=("\+rename")))
 async def rename(event):
