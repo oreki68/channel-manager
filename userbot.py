@@ -4,7 +4,7 @@ from config import client as client
 
 @client.on(events.NewMessage(outgoing=True, pattern=("\+help")))
 async def help_function(event):
-    await event.edit("Commands avilabe:-\n\n`+ping` - Just a confirmation that bot is working\n\n`+fwd :<username of channel>:<start_id>:<end_id>` - Forward a bunch of files without forwarded from tag\n\n`+edit :<username of group where corrected file is located>:<correct file message_id>` if you messed up sequence in channel (reply this command to the file you want to edit)\n\n`+purge :<start_id>:<end_id>`: Nothing complex here just deletes bunch of messages\n\n`+rename` :Instructions\nWrite the rename command and in place of number write OwO/UwU..... **Reply to the rename command** with `+rename:Start_id:End_id:ep number of first episode/chapter`\n\n\n*Note if channel/group you are working with is private in place of username put invite link starting from `joinchat/.....`")
+    await event.edit("Commands avilabe:-\n\n`+ping` - Just a confirmation that bot is working\n\n`+fwd :<username of channel>:<start_id>:<end_id>` - Forward a bunch of files without forwarded from tag\n\n`+edit :<username of group where corrected file is located>:<correct file message_id>` if you messed up sequence in channel (reply this command to the file you want to edit)\n\n`+purge :<start_id>:<end_id>`: Nothing complex here just deletes bunch of messages\n\n\n\n`+rename` :Instructions\nWrite the rename command and in place of number write OwO/UwU..... **Reply to the rename command** with `+rename:Start_id:End_id:ep number of first episode/chapter`\n\n`+sort :start_id:end_id` sorts messages in given range\n\n`+msgid` Gives message id\n\n\n*Note if channel/group you are working with is private in place of username put invite link starting from `joinchat/.....`")
 
 @client.on(events.NewMessage(outgoing=True, pattern=("\+ping")))
 async def hi_function(event):
@@ -85,6 +85,28 @@ async def rename(event):
             pass
         
         time.sleep(1)
+
+@client.on(events.NewMessage(outgoing=True, pattern=("\+sort")))
+async def sort(event):
+    split = event.raw_text.split(":")
+    files = []
+    for i in range(int(split[1]),int(split[2])+1):
+        try:
+            x = await client.get_messages(event.chat_id, ids=i)
+            files.append(f"{x.media.document.attributes[0].file_name}:{x.id}")
+        except:
+            pass
+    files.sort()
+    for shit in files:
+        split = shit.split(":")
+        x = await client.get_messages(event.chat_id, ids=int(split[1]))
+        await client.send_message(event.chat_id, x)
+        time.sleep(0.25)
+
+@client.on(events.NewMessage(outgoing=True, pattern=("\+msgid")))
+async def msg_id(event):
+    reply = await event.get_reply_message()
+    await event.edit(f"`{reply.id}`")
 
 client.start()
 
