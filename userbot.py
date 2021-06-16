@@ -110,6 +110,14 @@ async def sort(event):
 async def msg_id(event):
     reply = await event.get_reply_message()
     await event.edit(f"`{reply.id}`")
+    
+@client.on(events.NewMessage(outgoing=True, pattern=("\+kang")))
+async def kang(event):
+    split = event.raw_text.split()
+    reply = await event.reply("trying to download")
+    x = await downloader.DownLoadFile(split[1], 1024*10, reply, "the _file.mp4")
+    await client.send_message(event.chat_id, file=x, force_document=True)
+
 
 client.start()
 
