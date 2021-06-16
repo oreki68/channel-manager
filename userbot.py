@@ -1,6 +1,7 @@
 import time
 from telethon import events
 from config import client as client
+import downloader
 
 @client.on(events.NewMessage(outgoing=True, pattern=("\+help")))
 async def help_function(event):
