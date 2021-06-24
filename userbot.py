@@ -1,7 +1,20 @@
 import time
 from telethon import events
 from config import client as client
+from FastTelethon import upload_file
+import os
 import downloader
+
+class Timer:
+    def __init__(self, time_between=2):
+        self.start_time = time.time()
+        self.time_between = time_between
+
+    def can_send(self):
+        if time.time() > (self.start_time + self.time_between):
+            self.start_time = time.time()
+            return True
+        return False
 
 @client.on(events.NewMessage(outgoing=True, pattern=("\+help")))
 async def help_function(event):
@@ -110,14 +123,51 @@ async def sort(event):
 @client.on(events.NewMessage(outgoing=True, pattern=("\+msgid")))
 async def msg_id(event):
     reply = await event.get_reply_message()
-    await event.edit(f"`{reply.id}`")
-    
+    await event.edit(f"`{reply.id}`") 
+
+@client.on(events.NewMessage(outgoing=True, pattern=("\+sites")))
+async def sites(event):
+    await event.edit("www.animepahe.ru\n\nwww.gogoanime.ai\n\nwww.anime8.ru\n\nwww.mangasee123.com\n\nwww.mangahere.cc\n\nwww.kissmanga.nl")
+
 @client.on(events.NewMessage(outgoing=True, pattern=("\+kang")))
-async def kang(event):
-    split = event.raw_text.split()
-    reply = await event.reply("trying to download")
-    x = await downloader.DownLoadFile(split[1], 1024*10, reply, "the _file.mp4")
-    await client.send_message(event.chat_id, file=x, force_document=True)
+async def kang(event): 
+    split = event.raw_text[6:]
+    print(split)
+    reply = await event.reply("Downloading")
+    for_name = split.split("|")
+    url = for_name[0]
+    url = url.replace(' ','')
+    print(for_name)
+    try:
+        name = for_name[1]
+    except:
+        name = url.split("/")[-1]
+    await downloader.DownLoadFile(url, 1024*10, reply, file_name=name)
+    await Upload(event,reply, name)
+    os.remove(name)
+
+async def Upload(event,reply, out):
+    timer = Timer()
+    async def progress_bar(downloaded_bytes, total_bytes):
+        if timer.can_send():
+            await reply.edit(f"Uploading... {human_readable_size(downloaded_bytes)}/{human_readable_size(total_bytes)}")
+
+    with open(out, "rb") as f:
+        ok = await upload_file(
+                client=client,
+                file=f,
+                name=out,
+                progress_callback= progress_bar
+            )
+    await client.send_message(event.chat_id, file=ok, force_document=True)
+
+def human_readable_size(size, decimal_places=2):
+    for unit in ['B', 'KB', 'MB', 'GB', 'TB', 'PB']:
+        if size < 1024.0 or unit == 'PB':
+            break
+        size /= 1024.0
+    return f"{size:.{decimal_places}f} {unit}"
+
 
 
 client.start()
