@@ -1,5 +1,7 @@
+from re import T
 import time
 from telethon import events
+from telethon.errors.rpcerrorlist import PtsChangeEmptyError
 from config import client as client
 from FastTelethon import upload_file
 import os
@@ -131,22 +133,27 @@ async def sites(event):
 
 @client.on(events.NewMessage(outgoing=True, pattern=("\+kang")))
 async def kang(event): 
+    try:
+        x = await event.get_reply_message()
+        thumb = await client.download_media(x.photo)
+    except:
+        thumb = None
+
     split = event.raw_text[6:]
-    print(split)
     reply = await event.reply("Downloading")
     for_name = split.split("|")
     url = for_name[0]
     url = url.replace(' ','')
-    print(for_name)
     try:
         name = for_name[1]
     except:
         name = url.split("/")[-1]
     await downloader.DownLoadFile(url, 1024*10, reply, file_name=name)
-    await Upload(event,reply, name)
+    await Upload(event,reply, name, thumb)
     os.remove(name)
+    os.remove(thumb)
 
-async def Upload(event,reply, out):
+async def Upload(event,reply, out, thumbnail):
     timer = Timer()
     async def progress_bar(downloaded_bytes, total_bytes):
         if timer.can_send():
@@ -159,7 +166,11 @@ async def Upload(event,reply, out):
                 name=out,
                 progress_callback= progress_bar
             )
-    await client.send_message(event.chat_id, file=ok, force_document=True)
+    await client.send_message(
+        event.chat_id, file=ok, 
+        force_document=True, 
+        thumb=thumbnail
+    )   
 
 def human_readable_size(size, decimal_places=2):
     for unit in ['B', 'KB', 'MB', 'GB', 'TB', 'PB']:
@@ -167,8 +178,6 @@ def human_readable_size(size, decimal_places=2):
             break
         size /= 1024.0
     return f"{size:.{decimal_places}f} {unit}"
-
-
 
 client.start()
 
