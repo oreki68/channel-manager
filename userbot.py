@@ -6,6 +6,8 @@ from config import client as client
 from FastTelethon import upload_file
 import os
 import downloader
+from petpetgif import petpet
+
 
 class Timer:
     def __init__(self, time_between=2):
@@ -179,6 +181,16 @@ def human_readable_size(size, decimal_places=2):
         size /= 1024.0
     return f"{size:.{decimal_places}f} {unit}"
 
+              
+@client.on(events.NewMessage(outgoing=True, pattern=("\+pet")))
+async def pet(event):
+    reply = await event.get_reply_message()
+    await event.delete()
+    pic = await client.download_profile_photo(reply.sender_id)
+    petpet.make(pic, "res.gif")
+    await reply.reply(file="res.gif") 
+
+              
 client.start()
 
 client.run_until_disconnected()
