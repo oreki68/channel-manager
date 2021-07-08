@@ -1,13 +1,54 @@
-from re import T
 import time
 from telethon import events
-from telethon.errors.rpcerrorlist import PtsChangeEmptyError
 from config import client as client
 from FastTelethon import upload_file
 import os
 import downloader
 from petpetgif import petpet
 
+genres_template = {
+    'Action':'👊 Action',
+    'Comedy':'🤣 Comedy',
+    'Sport':'🏀 Sport',
+    'Adventure':'👒 Adventure',
+    'Drama':'🎭 Drama',
+    'Sci-Fi':'🔬 Sci-Fi',
+    'Ecchi':'💋 Ecchi',
+    'Horror':'🎃 Horror',
+    'Romance':'💕 Romance',
+    'Fantasy':'🧞 Fantasy',
+    'Mystery':'🕵️ Mystery',
+    'Slice of Life':'🏫 Slice of Life',
+    'Thriller':'🤯 Thriller',
+    'Mecha':'🤖 Mecha',
+    'Music':'🎵 Music',
+    'Psychological':'♟️ Psychological',
+    'Mahou Shoujo':'💔 Mahou Shoujo',
+    'Supernatural':'🔮 Supernatural'
+}
+
+template_main = '''**{title} ({year}) • TVSeries**
+__{duration}min__ ⭐️**{score}** [Anilist]({link})
+
+Genres: {genres_str}
+
+@Anime_Gallery
+
+📌 720p {audiostatus}
+
+Link - [{link_title}]({channel_link})
+'''
+
+template_desc = '''**{title} ({year}) • TVSeries**
+__{duration}min__ ⭐️**{score}** Anilist
+
+Genres: {genres_str}
+
+📌 720p {audiostatus}
+
+Anime: @Anime_Gallery
+Group: @Anime_Discussion_Cafe
+'''
 
 class Timer:
     def __init__(self, time_between=2):
@@ -22,7 +63,7 @@ class Timer:
 
 @client.on(events.NewMessage(outgoing=True, pattern=("\+help")))
 async def help_function(event):
-    await event.edit("Commands avilabe:-\n\n`+ping` - Just a confirmation that bot is working\n\n`+fwd :<username of channel>:<start_id>:<end_id>` - Forward a bunch of files without forwarded from tag\n\n`+edit :<username of group where corrected file is located>:<correct file message_id>` if you messed up sequence in channel (reply this command to the file you want to edit)\n\n`+purge :<start_id>:<end_id>`: Nothing complex here just deletes bunch of messages\n\n\n\n`+rename` :Instructions\nWrite the rename command and in place of number write OwO/UwU..... **Reply to the rename command** with `+rename:Start_id:End_id:ep number of first episode/chapter`\n\n`+sort :start_id:end_id` sorts messages in given range\n\n`+msgid` Gives message id\n\n`+kang {url} | name of file, reply to thumbnail (url upload)\n\n\n*Note if channel/group you are working with is private in place of username put invite link starting from `joinchat/.....`")
+    await event.edit("Commands avilabe:-\n\n`+ping` - Just a confirmation that bot is working\n\n`+fwd :<username of channel>:<start_id>:<end_id>` - Forward a bunch of files without forwarded from tag\n\n`+edit :<username of group where corrected file is located>:<correct file message_id>` if you messed up sequence in channel (reply this command to the file you want to edit)\n\n`+purge :<start_id>:<end_id>`: Nothing complex here just deletes bunch of messages\n\n\n\n`+rename` :Instructions\nWrite the rename command and in place of number write OwO/UwU..... **Reply to the rename command** with `+rename:Start_id:End_id:ep number of first episode/chapter`\n\n`+sort :start_id:end_id` sorts messages in given range\n\n`+msgid` Gives message id\n\n`+kang <url> | name of file, and reply to pic for thumbnail (url uploader)\n\n`+ anilist <year> <channel link> <Audio shit>`: Reply to Anifluid message and give command as caption of pic\n\n`+description <year> <audio shit>`: reply to anifluid message\n\n\n*Note if channel/group you are working with is private in place of username put invite link starting from `joinchat/.....`")
 
 @client.on(events.NewMessage(outgoing=True, pattern=("\+ping")))
 async def hi_function(event):
@@ -129,10 +170,6 @@ async def msg_id(event):
     reply = await event.get_reply_message()
     await event.edit(f"`{reply.id}`") 
 
-@client.on(events.NewMessage(outgoing=True, pattern=("\+sites")))
-async def sites(event):
-    await event.edit("www.animepahe.ru\n\nwww.gogoanime.ai\n\nwww.anime8.ru\n\nwww.mangasee123.com\n\nwww.mangahere.cc\n\nwww.kissmanga.nl")
-
 @client.on(events.NewMessage(outgoing=True, pattern=("\+kang")))
 async def kang(event): 
     try:
@@ -180,17 +217,68 @@ def human_readable_size(size, decimal_places=2):
             break
         size /= 1024.0
     return f"{size:.{decimal_places}f} {unit}"
-
-              
+    
 @client.on(events.NewMessage(outgoing=True, pattern=("\+pet")))
 async def pet(event):
     reply = await event.get_reply_message()
     await event.delete()
     pic = await client.download_profile_photo(reply.sender_id)
     petpet.make(pic, "res.gif")
-    await reply.reply(file="res.gif") 
+    await reply.reply(file="res.gif")
 
-              
+@client.on(events.NewMessage(outgoing=True, pattern="\+anilist"))
+async def anilist(event):
+    if event.is_reply:
+        data = event.raw_text.split(" ", 3)
+        channel_link = data[2]
+        ani = await event.get_reply_message()
+        link = ani.reply_markup.rows[0].buttons[0].url
+        ks = ani.text.split("**")
+        title = ks[1]
+        duration = ks[10].replace(":","")
+        duration = duration.replace("`","")
+        duration = duration.replace(" Per Ep.", "")
+        duration = duration.replace("\n", "")
+        score = ks[12].replace(":","")
+        score.replace("`","")
+        score = int(score)/10
+        genres = ks[14].replace(":","")
+        genres = genres.replace("`","")
+        genres = genres.replace("\n","")
+        list_g = genres.split(", ")
+        genre_str = ""
+        for g in list_g:
+            t = genres_template[g.strip()]
+            genre_str = f"{genre_str} {t}"
+        await event.edit(template_main.format(title=title, duration=duration, score=score, link=link,genres_str=genre_str, link_title=title, channel_link=channel_link, year=data[1], audiostatus=data[-1]))
+
+
+@client.on(events.NewMessage(outgoing=True, pattern="\+description"))
+async def anilist(event):
+    if event.is_reply:
+        ani = await event.get_reply_message()
+        data = event.raw_text.split(" ", 2)
+        ks = ani.text.split("**")
+        title = ks[1]
+        duration = ks[10].replace(":","")
+        duration = duration.replace("`","")
+        duration = duration.replace(" Per Ep.", "")
+        duration = duration.replace("\n", "")
+        score = ks[12].replace(":","")
+        score.replace("`","")
+        score = int(score)/10
+        genres = ks[14].replace(":","")
+        genres = genres.replace("`","")
+        genres = genres.replace("\n","")
+        list_g = genres.split(", ")
+        genre_str = ""
+        for g in list_g:
+            t = genres_template[g.strip()]
+            genre_str = f"{genre_str} {t}"
+        await event.edit(template_desc.format(title=title, duration=duration, score=score,genres_str=genre_str, year=data[1], audiostatus=data[-1]))
+
+
+
 client.start()
 
 client.run_until_disconnected()
