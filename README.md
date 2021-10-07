@@ -25,6 +25,7 @@ To run this project, you will need to add the following environment variables to
 ## Heroku
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/MiyukiKun/custom-userbot)
+### This repo is now compitable with Railway.app
 
 # Credits
 -  [Miyuki](https://github.com/MiyukiKun) - main dev for this project
