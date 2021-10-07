@@ -239,9 +239,12 @@ async def anilist(event):
         duration = duration.replace("`","")
         duration = duration.replace(" Per Ep.", "")
         duration = duration.replace("\n", "")
-        score = ks[12].replace(":","")
-        score.replace("`","")
-        score = int(score)/10
+        try:
+            score = ks[12].replace(":","")
+            score.replace("`","")
+            score = int(score)/10
+        except:
+            score = 8.0
         genres = ks[14].replace(":","")
         genres = genres.replace("`","")
         genres = genres.replace("\n","")
@@ -264,9 +267,12 @@ async def anilist(event):
         duration = duration.replace("`","")
         duration = duration.replace(" Per Ep.", "")
         duration = duration.replace("\n", "")
-        score = ks[12].replace(":","")
-        score.replace("`","")
-        score = int(score)/10
+        try:
+            score = ks[12].replace(":","")
+            score.replace("`","")
+            score = int(score)/10
+        except:
+            score = 8.0
         genres = ks[14].replace(":","")
         genres = genres.replace("`","")
         genres = genres.replace("\n","")
