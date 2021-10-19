@@ -10,6 +10,7 @@ genres_template = {
     'Action':'👊 Action',
     'Comedy':'🤣 Comedy',
     'Sport':'🏀 Sport',
+    'Sports':'🏀 Sports',
     'Adventure':'👒 Adventure',
     'Drama':'🎭 Drama',
     'Sci-Fi':'🔬 Sci-Fi',
