@@ -64,7 +64,7 @@ class Timer:
 
 @client.on(events.NewMessage(outgoing=True, pattern=("\+help")))
 async def help_function(event):
-    await event.edit("Commands avilabe:-\n\n`+ping` - Just a confirmation that bot is working\n\n`+fwd :<username of channel>:<start_id>:<end_id>` - Forward a bunch of files without forwarded from tag\n\n`+edit :<username of group where corrected file is located>:<correct file message_id>` if you messed up sequence in channel (reply this command to the file you want to edit)\n\n`+purge :<start_id>:<end_id>`: Nothing complex here just deletes bunch of messages\n\n\n\n`+rename` :Instructions\nWrite the rename command and in place of number write OwO/UwU..... **Reply to the rename command** with `+rename:Start_id:End_id:ep number of first episode/chapter`\n\n`+sort :start_id:end_id` sorts messages in given range\n\n`+msgid` Gives message id\n\n`+kang <url> | name of file, and reply to pic for thumbnail (url uploader)\n\n`+ anilist <year> <channel link> <Audio shit>`: Reply to Anifluid message and give command as caption of pic\n\n`+description <year> <audio shit>`: reply to anifluid message\n\n\n*Note if channel/group you are working with is private in place of username put invite link starting from `joinchat/.....`")
+    await event.edit("Commands avilabe:-\n\n`+ping` - Just a confirmation that bot is working\n\n`+fwd/media :<username of channel>:<start_id>:<end_id>` - Forward a bunch of files without forwarded from tag\n\n`+edit :<username of group where corrected file is located>:<correct file message_id>` if you messed up sequence in channel (reply this command to the file you want to edit)\n\n`+purge :<start_id>:<end_id>`: Nothing complex here just deletes bunch of messages\n\n\n\n`+rename` :Instructions\nWrite the rename command and in place of number write OwO/UwU..... **Reply to the rename command** with `+rename:Start_id:End_id:ep number of first episode/chapter`\n\n`+sort :start_id:end_id` sorts messages in given range\n\n`+msgid` Gives message id\n\n`+kang <url> | name of file, and reply to pic for thumbnail (url uploader)\n\n`+ anilist <year> <channel link> <Audio shit>`: Reply to Anifluid message and give command as caption of pic\n\n`+description <year> <audio shit>`: reply to anifluid message\n\n\n*Note if channel/group you are working with is private in place of username put invite link starting from `joinchat/.....`")
 
 @client.on(events.NewMessage(outgoing=True, pattern=("\+ping")))
 async def hi_function(event):
@@ -284,7 +284,7 @@ async def anilist(event):
             genre_str = f"{genre_str} {t}"
         await event.edit(template_desc.format(title=title, duration=duration, score=score,genres_str=genre_str, year=data[1], audiostatus=data[-1]))
 
-@client.on(events.NewMessage(outgoing=True, pattern=("\+fwdmedia")))
+@client.on(events.NewMessage(outgoing=True, pattern=("\+media")))
 async def fwd_function(event):
     try:
         await event.edit("okay, on it")
