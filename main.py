@@ -284,7 +284,30 @@ async def anilist(event):
             genre_str = f"{genre_str} {t}"
         await event.edit(template_desc.format(title=title, duration=duration, score=score,genres_str=genre_str, year=data[1], audiostatus=data[-1]))
 
+@client.on(events.NewMessage(outgoing=True, pattern=("\+fwdmedia")))
+async def fwd_function(event):
+    try:
+        await event.edit("okay, on it")
+        split = event.raw_text.split(":")
+        username_of_channel = split[1]
+        start_id = int(split[2])
+        end_id = int(split[3])+1
+        channel = await client.get_entity(f"t.me/{username_of_channel}")
+        for i in range(start_id, end_id):
+            try:
+                message = await client.get_messages(channel, ids=i)
+                if message.media != None:
+                    await client.send_message(event.chat_id, message)
+            except:
+                pass
+            time.sleep(0.25)
+    except:
+        pass
 
+    x = await client.send_message(event.chat_id, "done")
+    time.sleep(1)
+    await x.delete()
+    await event.delete()
 
 client.start()
 
