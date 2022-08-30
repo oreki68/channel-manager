@@ -1,5 +1,5 @@
-# Custom Telegram Userbot
-Telegram userbot mainly useful for channel owners without the 100s of useless spammy features
+# Custom Telegram Channel Manager UB
+Telegram ub mainly useful for channel owners without the 100s of useless spammy features
 <br></br>
  <p align='center'>
   <a href="https://www.python.org/" alt="made-with-python"> <img src="https://img.shields.io/badge/Made%20with-Python-00ead3.svg?style=flat-square&logo=python&logoColor=00ead3&color=00ead3" /> </a>
