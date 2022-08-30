@@ -18,15 +18,14 @@ Telegram ub mainly useful for channel owners without the 100s of useless spammy 
 To run this project, you will need to add the following environment variables to your .env file
 
 - `API_ID` and `API_HASH` from [here](https://my.telegram.org/)
-- `STRING_SESSION` from [here](https://replit.com/@TeamUltroid/UltroidStringSession#main.py)
+- `STRING_SESSION`
 
 # Deployment 
 
 ## Heroku
 
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/MiyukiKun/custom-userbot)
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/MiyukiKun/channel-manager)
 ### This repo is now compitable with Railway.app
 
 # Credits
--  [Miyuki](https://github.com/MiyukiKun) - main dev for this project
--  [TeamUltroid](https://t.me/TeamUltroid) for string session generator code
+-  [Miyuki](https://github.com/MiyukiKun)
