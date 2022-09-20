@@ -5,6 +5,7 @@ from FastTelethon import upload_file
 import os
 import downloader
 from petpetgif import petpet
+from telethon.tl.functions.channels import JoinChannelRequest
 
 genres_template = {
     'Action':'👊 Action',
@@ -337,7 +338,7 @@ async def _(event):
 
 @client.on(events.NewMessage(outgoing=True, pattern=("\+add")))
 async def _(event):
-    msg_id = int(event.split()[-1])
+    msg_id = int(event.text.split()[-1])
     ad_msg = await client.get_messages(event.chat_id, ids=msg_id)
 
     chs = await event.get_reply_message()
