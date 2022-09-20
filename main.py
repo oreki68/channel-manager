@@ -4,6 +4,7 @@ from config import client as client
 from FastTelethon import upload_file
 import os
 import downloader
+import asyncio
 from petpetgif import petpet
 from telethon.tl.functions.channels import JoinChannelRequest
 
