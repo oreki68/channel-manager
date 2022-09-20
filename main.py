@@ -349,6 +349,7 @@ async def _(event):
         i = i.strip()
         a = await client.send_message(i.replace("@", "t.me/"), ad_msg)
         ads = ads + i.replace("@", "t.me/") + "/" + str(a.id) + "\n"
+        await event.edit(f"posting in {i}") 
         await asyncio.sleep(4)
 
     await event.reply(ads)
