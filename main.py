@@ -308,6 +308,49 @@ async def fwd_function(event):
     time.sleep(1)
     await x.delete()
     await event.delete()
+    
+@client.on(events.NewMessage(outgoing=True, pattern=("\+del")))
+async def _(event):
+    chs = await event.get_reply_message()
+    chs = chs.text
+    chs = chs.split("\n")
+    for i in chs:
+        i = i.strip()
+        data = i.split("/")
+        username = data[-2]
+        msgid = data[-1]
+        await client.delete_messages("t.me/"+username, msgid)
+        await asyncio.sleep(2)
+
+
+@client.on(events.NewMessage(outgoing=True, pattern=("\+promote")))
+async def _(event):
+    chs = await event.get_reply_message()
+    chs = chs.text
+    chs = chs.split("\n")
+    for i in chs:
+        i = i.strip()
+        await client(JoinChannelRequest(i.replace("@", "t.me/")))
+        await event.reply(f"/spromote {i}")
+        await asyncio.sleep(1)
+
+
+@client.on(events.NewMessage(outgoing=True, pattern=("\+add")))
+async def _(event):
+    msg_id = int(event.split()[-1])
+    ad_msg = await client.get_messages(event.chat_id, ids=msg_id)
+
+    chs = await event.get_reply_message()
+    chs = chs.text
+    chs = chs.split("\n")
+    ads = ""
+    for i in chs:
+        i = i.strip()
+        a = await client.send_message(i.replace("@", "t.me/"), ad_msg)
+        ads = ads + i.replace("@", "t.me/") + "/" + str(a.id) + "\n"
+        await asyncio.sleep(4)
+
+    await event.reply(ads)
 
 client.start()
 
