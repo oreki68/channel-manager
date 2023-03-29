@@ -340,6 +340,7 @@ async def preveiw(event):
 @client.on(events.NewMessage(outgoing=True, pattern=("\+post")))
 async def post(event):
     try:
+        error_usernames = []
         global msg
         await event.edit("okay, on it")
         if msg is not None:
@@ -352,20 +353,30 @@ async def post(event):
             media = await client.download_media(msg.media)
             ads = []
             for i in ids:
-                ent = await bot.get_entity(i)
-                a = await bot.send_message(ent,message=msg.text,buttons=msg.buttons,file=media)
-                ads.append(i + "/" + str(a.id))
+                try:
+                    ent = await bot.get_entity(i)
+                    a = await bot.send_message(ent,message=msg.text,buttons=msg.buttons,file=media)
+                    ads.append(i + "/" + str(a.id))
+                except Exception as e:
+                    j = i.replace("t.me/", "@")
+                    error_usernames.append(j)
+                    # await client.send_message(event.chat_id, f"error occured for {j}")
             await event.edit("\n".join(ads))
+
             os.remove(media)
         else:
             await event.edit("No message copied")
     except Exception as e:
         await event.edit(str(e))
+    finally:
+        if len(error_usernames) > 0:
+            await client.send_message(event.chat_id, f"error occured for {', '.join(error_usernames)}")
 
 
 @client.on(events.NewMessage(outgoing=True, pattern=("\+del")))
 async def delete(event):
     try:
+        errored_usernames = []
         await event.edit("okay, on it")
         x = await event.get_reply_message()
         if x is None:
@@ -378,11 +389,18 @@ async def delete(event):
             username = a[-2]
             msgid = a[-1]
             print(username)
-            await bot.delete_messages("t.me/"+username, msgid)
-
+            try:
+                await bot.delete_messages("t.me/"+username, msgid)
+            except Exception as e:
+                errored_usernames.append("@" + username)
+                print(e)
+            
         await event.edit("Done.")
     except Exception as e:
         await event.edit(str(e))
+    finally:
+        if len(errored_usernames) > 0:
+            await client.send_message(event.chat_id, "error usernames: \n\n"+  "\n".join(errored_usernames))
 
 @client.on(events.NewMessage(outgoing=True, pattern=("\+parse")))
 async def parse(event):
@@ -402,6 +420,25 @@ async def parse(event):
     except Exception as e:
         await event.edit(str(e))
 
+
+@client.on(events.NewMessage(outgoing=True, pattern=("\+parseraw")))
+async def parseraw(event):
+    try:
+        await event.edit("okay, on it")
+        x = await event.get_reply_message()
+        if x is None:
+            event.edit("reply to message")
+            return
+        msg = []
+        x = x.text.splitlines()
+        x = x[2:]
+        for i in x:
+            a = i.split()
+            msg.append(a[0])
+
+        await event.edit("\n".join(msg))
+    except Exception as e:
+        await event.edit(str(e))
 
 client.start()
 
